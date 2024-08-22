@@ -9,9 +9,11 @@ resource "aws_db_instance" "this" {
   vpc_security_group_ids = var.vpc_security_group_ids
   db_subnet_group_name   = var.db_subnet_group_name
   skip_final_snapshot    = true
+  multi_az  = false
   tags = {
     Name = "${var.db_identifier}:cgstest"
   }
+  depends_on = [ aws_db_subnet_group.this ]
 }
 
 resource "aws_db_subnet_group" "this" {
