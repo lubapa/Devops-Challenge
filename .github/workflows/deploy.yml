@@ -3,7 +3,7 @@ name: Deploy Infrastructure and Build Docker Image
 on:
   push:
     branches:
-      - infra-test
+      - infra_test
 
 jobs:
   # terraform:
