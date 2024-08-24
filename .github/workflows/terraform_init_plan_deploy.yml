@@ -25,13 +25,8 @@ jobs:
 
       - name: Create temporary tfvars file
         run: |
-          echo "container_name=${{ github.repository }}-${{ github.ref_name }}-${{ env.GIT_SHA }} > ./infrastructure/terraform.tfvars
-          echo "container_image=ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:${{ github.ref_name }}-${{ env.GIT_SHA }} >> ./infrastructure/terraform.tfvars
-
-      - name: Set environment variables
-        run: |
-          echo "CONTAINER_NAME=${{ github.repository }}-${{ github.ref_name }}-${{ env.GIT_SHA }} >> $GITHUB_ENV
-          echo "CONTAINER_IMAGE=ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:${{ github.ref_name }}-${{ env.GIT_SHA }} >> $GITHUB_ENV
+          echo "container_name=${{ github.repository }}-${{ github.ref_name }}-${{ env.GIT_SHA }}" > ./infrastructure/terraform.tfvars
+          echo "container_image=ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:${{ github.ref_name }}-${{ env.GIT_SHA }}" >> ./infrastructure/terraform.tfvars
 
       - name: Initialize Terraform
         working-directory: ./infrastructure
@@ -58,7 +53,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           GIT_BRANCH: ${{ env.GIT_BRANCH }}
           GIT_SHA: ${{ env.GIT_SHA }}
-        run: terraform plan -var="container_name=${CONTAINER_NAME}" -var="container_image=${CONTAINER_IMAGE}" -out=tfplan-${{ env.GIT_SHA }}
+        run: terraform plan -var-file=terraform.tfvars -out=tfplan-${{ env.GIT_SHA }}
 
       - name: Remove temporary tfvars file
         run: rm ./infrastructure/terraform.tfvars
