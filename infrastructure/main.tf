@@ -10,7 +10,6 @@ module "vpc" {
   source = "./modules/vpc"
   name   = "hello-world-vpc"
   cidr_block = "10.123.0.0/16"
-  # Cambiar nomrbres de subnets
   container_subnet_cidrs  = ["10.123.1.0/24" ] #, "10.123.2.0/24"]
   private_subnet_cidrs = ["10.123.3.0/24" , "10.123.4.0/24"]
   azs = ["sa-east-1a", "sa-east-1b"]
