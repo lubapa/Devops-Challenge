@@ -1,9 +1,9 @@
 variable "container_name" {
-  description = "Nombre del contenedor basado en la rama y commit"
+  description = "Container name based on branch and commit"
   type        = string
 }
 
 variable "container_image" {
-  description = "Imagen del contenedor basada en la rama y commit"
+  description = "Container image name based on branch and commit"
   type        = string
 }
