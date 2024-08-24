@@ -40,7 +40,10 @@ jobs:
 
       - name: Validate Terraform
         working-directory: ./infrastructure
-        run: terraform validate
+        env:
+          GIT_BRANCH: ${{ env.GIT_BRANCH }}
+          GIT_SHA: ${{ env.GIT_SHA }}
+        run: terraform validate -var="container_name=${CONTAINER_NAME}" -var="container_image=${CONTAINER_IMAGE}"
 
       - name: Plan Terraform
         working-directory: ./infrastructure
