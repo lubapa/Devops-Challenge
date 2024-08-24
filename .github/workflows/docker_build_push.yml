@@ -45,4 +45,14 @@ jobs:
       
       - name: Deploy to ECS
         if: github.ref == 'refs/heads/infra_test' || github.ref == 'refs/heads/develop'
-        run: aws ecs update-service --cluster hello-world-cluster --service hello-world-service --force-new-deployment
+        run: |
+          aws ecs update-service --cluster hello-world-cluster --service hello-world-service --force-new-deployment
+          aws ecs wait services-stable --cluster hello-world-cluster --services hello-world-service
+      
+      - name: Get Task IP
+        if: github.ref == 'refs/heads/infra_test' || github.ref == 'refs/heads/develop'
+        run: |
+          TASK_ARN=$(aws ecs list-tasks --cluster hello-world-cluster --service-name hello-world-service --query 'taskArns[0]' --output text)
+          TASK_DETAILS=$(aws ecs describe-tasks --cluster hello-world-cluster --tasks $TASK_ARN --query 'tasks[0].attachments[0].details')
+          PUBLIC_IP=$(echo $TASK_DETAILS | jq -r '.[] | select(.name == "private-ip-address") | .value')
+          echo "Task Public IP: $PUBLIC_IP"
