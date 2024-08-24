@@ -30,4 +30,8 @@ jobs:
         run: docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:${{ github.ref_name }}-${{ env.GIT_SHA }} ./application
 
       - name: Push Docker Image to GitHub Container Registry
-        run: docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:${{ github.ref_name }}-${{ env.GIT_SHA }}
+        run: |
+          docker tag ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:${{ github.ref_name }}-${{ env.GIT_SHA }} ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:latest
+
+          docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:${{ github.ref_name }}-${{ env.GIT_SHA }}
+          docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:latest
