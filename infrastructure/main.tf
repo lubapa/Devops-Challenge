@@ -4,6 +4,8 @@ module "ecs_data" {
   container_image = var.container_image
   container_name = var.container_name
 }
+
+#VPC creation
 module "vpc" {
   source = "./modules/vpc"
   name   = "hello-world-vpc"
