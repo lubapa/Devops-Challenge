@@ -61,7 +61,7 @@ jobs:
         run: terraform plan -var="container_name=${CONTAINER_NAME}" -var="container_image=${CONTAINER_IMAGE}" -out=tfplan-${{ env.GIT_SHA }}
 
       - name: Remove temporary tfvars file
-        run: rm infrastructure/terraform.tfvars
+        run: rm ./infrastructure/terraform.tfvars
 
       - name: Apply Terraform
         if: github.event_name == 'workflow_dispatch'
