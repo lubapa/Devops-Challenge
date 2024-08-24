@@ -1,3 +1,4 @@
+# Container definitions
 module "ecs_data" {
   source = "./modules/ecs_data"
   container_image = var.container_image
