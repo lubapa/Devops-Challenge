@@ -64,6 +64,7 @@ module "rds" {
   subnets =  module.vpc.private_subnets
 }
 
+#Role for ECS execution task
 module "iam_role" {
   source = "./modules/iam"
   role_name = "ecs-task-execution-role"
