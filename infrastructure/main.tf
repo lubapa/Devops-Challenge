@@ -49,6 +49,7 @@ module "ecs" {
   security_groups    = [ module.security_group.security_group_id]
 }
 
+# RDS service 
 module "rds" {
   source = "./modules/rds"
   db_identifier = "rds"
