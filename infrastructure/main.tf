@@ -16,6 +16,7 @@ module "vpc" {
   azs = ["sa-east-1a", "sa-east-1b"]
 }
 
+# Http security group
 module "security_group" {
   source = "./modules/sg-http"
   name   = "hello-world-http-sg"
