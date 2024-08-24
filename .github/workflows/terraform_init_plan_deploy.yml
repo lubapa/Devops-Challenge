@@ -27,6 +27,11 @@ jobs:
         with:
           terraform_version: 1.5.7
 
+      - name: Set environment variables
+        run: |
+          echo "CONTAINER_NAME=${{ github.repository }}-${{ env.GIT_BRANCH }}-${{ env.GIT_SHA }}" >> $GITHUB_ENV
+          echo "CONTAINER_IMAGE=ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:${{ env.GIT_BRANCH }}-${{ env.GIT_SHA }}" >> $GITHUB_ENV
+
       - name: Initialize Terraform
         working-directory: ./infrastructure
         env:
@@ -49,11 +54,11 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           GIT_BRANCH: ${{ env.GIT_BRANCH }}
           GIT_SHA: ${{ env.GIT_SHA }}
-        run: terraform plan -out=tfplan
+        run: terraform plan -var="container_name=${CONTAINER_NAME}" -var="container_image=${CONTAINER_IMAGE}" -out=tfplan-${{ env.GIT_SHA }}
 
       - name: Apply Terraform
         if: github.event_name == 'workflow_dispatch'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve tfplan-${{ env.GIT_SHA }}
