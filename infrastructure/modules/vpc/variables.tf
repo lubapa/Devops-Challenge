@@ -8,8 +8,8 @@ variable "cidr_block" {
   type        = string
 }
 
-variable "public_subnet_cidrs" {
-  description = "Lista de CIDRs para las subnets públicas"
+variable "container_subnet_cidrs" {
+  description = "CIDR list for containers subnet"
   type        = list(string)
 }
 

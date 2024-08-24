@@ -11,7 +11,7 @@ module "vpc" {
   name   = "hello-world-vpc"
   cidr_block = "10.123.0.0/16"
   # Cambiar nomrbres de subnets
-  public_subnet_cidrs  = ["10.123.1.0/24" ] #, "10.123.2.0/24"]
+  container_subnet_cidrs  = ["10.123.1.0/24" ] #, "10.123.2.0/24"]
   private_subnet_cidrs = ["10.123.3.0/24" , "10.123.4.0/24"]
   azs = ["sa-east-1a", "sa-east-1b"]
 }
@@ -43,7 +43,7 @@ module "ecs" {
   service_name       = "hello-world-service"
   # Instances of the task to place and keep running
   desired_count      = 1
-  subnets            = module.vpc.public_subnets
+  subnets            = module.vpc.container_subnet_cidrs
   security_groups    = [ module.security_group.security_group_id]
 }
 

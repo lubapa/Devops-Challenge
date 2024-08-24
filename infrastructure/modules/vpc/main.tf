@@ -7,10 +7,10 @@ resource "aws_vpc" "this" {
   }
 }
 
-resource "aws_subnet" "public" {
-  count                   = length(var.public_subnet_cidrs)
+resource "aws_subnet" "container" {
+  count                   = length(var.container_subnet_cidrs)
   vpc_id                  = aws_vpc.this.id
-  cidr_block              = var.public_subnet_cidrs[count.index]
+  cidr_block              = var.container_subnet_cidrs[count.index]
   map_public_ip_on_launch = true
   availability_zone       = element(var.azs, count.index)
   tags = {
@@ -47,7 +47,7 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-  count          = length(var.public_subnet_cidrs)
-  subnet_id      = aws_subnet.public[count.index].id
+  count          = length(var.container_subnet_cidrs)
+  subnet_id      = aws_subnet.container[count.index].id
   route_table_id = aws_route_table.public.id
 }
