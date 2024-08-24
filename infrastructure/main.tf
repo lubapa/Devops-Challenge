@@ -30,7 +30,7 @@ module "ecs" {
   source = "./modules/ecs"
   cluster_name      = "hello-world-cluster"
   task_family       = "hello-world-task"
-  container_definitions = module.ecs_data.container_definitions.rendered
+  container_definitions = module.ecs_data.container_definitions_rendered
   # 256 (.25 vCPU)
   cpu               = "256"
   # Memory used by task MiB
