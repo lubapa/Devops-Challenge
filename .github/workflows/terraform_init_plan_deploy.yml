@@ -33,6 +33,9 @@ jobs:
           echo "container_name=\"${{ github.repository }}-${{ github.ref_name }}-${{ env.GIT_SHA }}\"" > ./infrastructure/terraform.tfvars
           echo "container_image=\"ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:latest\"" >> ./infrastructure/terraform.tfvars
 
+      - name: List tfvars file
+        run: cat ./infrastructure/terraform.tfvars
+
       - name: Initialize Terraform
         working-directory: ./infrastructure
         env:
