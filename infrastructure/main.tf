@@ -31,6 +31,7 @@ module "security_group_mysql" {
   depends_on = [ module.vpc ]
 }
 
+# ECS creation
 module "ecs" {
   source = "./modules/ecs"
   cluster_name      = "hello-world-cluster"
