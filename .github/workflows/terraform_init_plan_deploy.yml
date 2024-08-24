@@ -2,10 +2,6 @@ name: Deploy Infrastructure
 
 
 on:
-  workflow_run:
-    workflows: ["Build & Push Docker Image"]
-    types:
-      - completed
   push:  
     branches:
       - infra_test
