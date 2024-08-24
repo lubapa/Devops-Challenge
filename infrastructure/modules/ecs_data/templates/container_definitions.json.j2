@@ -3,6 +3,9 @@
     "name": "${container_name}",
     "image": "${container_image}",
     "memory": ${memory},
+    "repositoryCredentials": {
+      "credentialsParameter": "arn:aws:secretsmanager:sa-east-1:817823645260:secret:ghrc_deploys-SFSDuS"
+    },
     "cpu": ${cpu},
     "portMappings": [
       {
