@@ -23,6 +23,7 @@ module "security_group" {
   vpc_id = module.vpc.vpc_id
   depends_on = [ module.vpc ]
 }
+# mysql security group
 module "security_group_mysql" {
   source = "./modules/sg-mysql"
   name   = "hello-world-db-sg"
