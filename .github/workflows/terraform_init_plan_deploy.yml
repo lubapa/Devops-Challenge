@@ -23,6 +23,11 @@ jobs:
         with:
           terraform_version: 1.5.7
 
+      - name: Create temporary tfvars file
+        run: |
+          echo "container_name=${{ github.repository }}-${{ env.GIT_BRANCH }}-${{ env.GIT_SHA }}" > ./infrastructure/terraform.tfvars
+          echo "container_image=ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:${{ env.GIT_BRANCH }}-${{ env.GIT_SHA }}" >> ./infrastructure/terraform.tfvars
+
       - name: Set environment variables
         run: |
           echo "CONTAINER_NAME=${{ github.repository }}-${{ env.GIT_BRANCH }}-${{ env.GIT_SHA }}" >> $GITHUB_ENV
@@ -43,7 +48,7 @@ jobs:
         env:
           GIT_BRANCH: ${{ env.GIT_BRANCH }}
           GIT_SHA: ${{ env.GIT_SHA }}
-        run: terraform validate -var="container_name=${CONTAINER_NAME}" -var="container_image=${CONTAINER_IMAGE}"
+        run: terraform validate
 
       - name: Plan Terraform
         working-directory: ./infrastructure
@@ -54,6 +59,9 @@ jobs:
           GIT_BRANCH: ${{ env.GIT_BRANCH }}
           GIT_SHA: ${{ env.GIT_SHA }}
         run: terraform plan -var="container_name=${CONTAINER_NAME}" -var="container_image=${CONTAINER_IMAGE}" -out=tfplan-${{ env.GIT_SHA }}
+
+      - name: Remove temporary tfvars file
+        run: rm infrastructure/terraform.tfvars
 
       - name: Apply Terraform
         if: github.event_name == 'workflow_dispatch'
