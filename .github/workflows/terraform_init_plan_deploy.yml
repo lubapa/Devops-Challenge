@@ -6,7 +6,7 @@ on:
     branches:
       - infra_test
     paths:
-      - 'infrastucture/**'
+      - 'infrastructure/**'
   workflow_dispatch:
 
 jobs:
