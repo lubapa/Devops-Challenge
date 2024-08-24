@@ -1,19 +1,8 @@
-# Template Container
-data "template_file" "container_definitions" {
-  template = file("${path.module}/templates/container_definitions.json.j2")
-
-  vars = {
-    container_name  = "ballenita_minera"
-    container_image = "adminer"
-    memory          = "512"
-    cpu             = "256"
-    # db_port         = "3306"
-    # db_name         = "cgstest"
-    # db_user         = "admin"
-    # db_password     = "@@01@@02@@03/"
-  }
+module "ecs_data" {
+  source = "./modules/ecs_data"
+  container_image = var.container_image
+  container_name = var.container_name
 }
-
 module "vpc" {
   source = "./modules/vpc"
   name   = "hello-world-vpc"
@@ -41,7 +30,7 @@ module "ecs" {
   source = "./modules/ecs"
   cluster_name      = "hello-world-cluster"
   task_family       = "hello-world-task"
-  container_definitions = data.template_file.container_definitions.rendered
+  container_definitions = module.ecs_data.container_definitions.rendered
   # 256 (.25 vCPU)
   cpu               = "256"
   # Memory used by task MiB
