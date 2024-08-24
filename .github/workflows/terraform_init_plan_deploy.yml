@@ -30,8 +30,8 @@ jobs:
             
       - name: Create temporary tfvars file
         run: |
-          echo "container_name=\"${{ github.repository }}-${{ github.ref_name }}-${{ env.GIT_SHA }}\"" > ./infrastructure/terraform.tfvars
-          echo "container_image=\"ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:latest\"" >> ./infrastructure/terraform.tfvars
+          echo "container_name=${{ github.repository }}-${{ github.ref_name }}-${{ env.GIT_SHA }}" > ./infrastructure/terraform.tfvars
+          echo "container_image=ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:latest" >> ./infrastructure/terraform.tfvars
 
       - name: List tfvars file
         run: cat ./infrastructure/terraform.tfvars
