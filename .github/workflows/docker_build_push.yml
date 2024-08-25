@@ -53,7 +53,8 @@ jobs:
         if: github.ref == 'refs/heads/infra_test' || github.ref == 'refs/heads/develop'
         id: get-alb-dns
         run: |
-            ALB_DNS=$(aws elbv2 describe-load-balancers --query "LoadBalancers[?LoadBalancerName=='hello-world-alb-${{ github.ref_nam }}'].DNSName" --output text)
+            ALB_NAME_PATTERN="*-${{ github.ref_nam }}"
+            ALB_DNS=$(aws elbv2 describe-load-balancers --query "LoadBalancers[?contains(LoadBalancername, \`${ALB_NAME_PATTERN}\`].DNSName" --output text)
             echo "ALB DNS Name: $ALB_DNS"
             echo "ALB_DNS_NAME=$ALB_DNS" >> $GITHUB_ENV
       
