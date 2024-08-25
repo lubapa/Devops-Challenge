@@ -48,11 +48,16 @@ jobs:
         run: |
           aws ecs update-service --cluster hello-world-cluster --service hello-world-service --force-new-deployment
           aws ecs wait services-stable --cluster hello-world-cluster --services hello-world-service
+
+      - name: Get ALB DNS
+        if: github.ref == 'refs/heads/infra_test' || github.ref == 'refs/heads/develop'
+        id: get-alb-dns
+        run: |
+            ALB_DNS=$(aws elbv2 describe-load-balancers --query "LoadBalancers[?LoadBalancerName=='hello-world-alb-${{ github.ref_nam }}'].DNSName" --output text)
+            echo "ALB DNS Name: $ALB_DNS"
+            echo "ALB_DNS_NAME=$ALB_DNS" >> $GITHUB_ENV
       
-      - name: Get Task IP
+      - name: Notify Deployment
         if: github.ref == 'refs/heads/infra_test' || github.ref == 'refs/heads/develop'
         run: |
-          TASK_ARN=$(aws ecs list-tasks --cluster hello-world-cluster --service-name hello-world-service --query 'taskArns[0]' --output text)
-          TASK_DETAILS=$(aws ecs describe-tasks --cluster hello-world-cluster --tasks $TASK_ARN --query 'tasks[0].attachments[0].details')
-          PUBLIC_IP=$(echo $TASK_DETAILS | jq -r '.[] | select(.name == "private-ip-address") | .value')
-          echo "Task Public IP: $PUBLIC_IP"
+            echo "Deployment complete. The DNS of the ALB is ${{ env.ALB_DNS_NAME }}"
