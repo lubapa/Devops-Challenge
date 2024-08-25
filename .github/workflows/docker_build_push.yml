@@ -46,14 +46,14 @@ jobs:
       - name: Deploy to ECS
         if: github.ref == 'refs/heads/infra_test' || github.ref == 'refs/heads/develop'
         run: |
-          aws ecs update-service --cluster hello-world-cluster --service hello-world-service --force-new-deployment
-          aws ecs wait services-stable --cluster hello-world-cluster --services hello-world-service
+          aws ecs update-service --cluster helloworld-cluster-${{ github.ref_name }} --service helloworld-service-${{ github.ref_name }} --force-new-deployment
+          aws ecs wait services-stable --cluster helloworld-cluster-${{ github.ref_name }} --services helloworld-service-${{ github.ref_name }}
 
       - name: Get ALB DNS
         if: github.ref == 'refs/heads/infra_test' || github.ref == 'refs/heads/develop'
         id: get-alb-dns
         run: |
-            ALB_NAME_PATTERN="*-${{ github.ref_nam }}"
+            ALB_NAME_PATTERN="*-${{ github.ref_name }}"
             ALB_DNS=$(aws elbv2 describe-load-balancers --query "LoadBalancers[?contains(LoadBalancername, \`${ALB_NAME_PATTERN}\`].DNSName" --output text)
             echo "ALB DNS Name: $ALB_DNS"
             echo "ALB_DNS_NAME=$ALB_DNS" >> $GITHUB_ENV
