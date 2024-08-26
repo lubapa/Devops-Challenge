@@ -32,5 +32,12 @@ Requirements to deploy:
 > [!IMPORTANT]  
 > The terraform_init_plan_deploy.yml file was used to test an automated way to deploy Terraform changes. However, this approach could not be implemented effectively because it requires a shared location to store the terraform.tfstate file. This shared state is essential for tools like GitHub, GitLab, or any CI/CD system to understand the current state of the infrastructure and apply updates correctly.
 
+> [!IMPORTANT]  
+> This infrastructure can be improved in various ways, depending on several factors such as the tools used by your company or homelab, how you want to manage secrets, and the types of resources available.
+
+
 Architecture Diagram
 ![Infra Diagram](./infra_diagram.svg)
+
+Workflow Diagram
+![Workflow Diagram](./workflow_diagram.png)
