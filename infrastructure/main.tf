@@ -10,9 +10,9 @@ module "ecs_data" {
 module "vpc" {
   source = "./modules/vpc"
   name   = "${var.app_name}-vpc-${var.branch_name}"
-  cidr_block = "10.123.0.0/16"
-  public_subnet_cidrs  = ["10.123.1.0/24","10.123.2.0/24"]
-  private_subnet_cidrs = ["10.123.3.0/24" , "10.123.4.0/24"]
+  cidr_block = "10.124.0.0/16"
+  public_subnet_cidrs  = ["10.124.1.0/24", "10.124.2.0/24"]
+  private_subnet_cidrs = ["10.124.3.0/24", "10.124.4.0/24"]
   azs = ["sa-east-1a", "sa-east-1b"]
 }
 
