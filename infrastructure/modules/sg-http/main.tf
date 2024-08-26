@@ -8,19 +8,17 @@ resource "aws_security_group" "allow_http_ecs" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_http" {
-  description              = "Allow HTTP inbound traffic"
+resource "aws_security_group_rule" "allow_http" {
+  type                     = "ingress"
+  description              = "Allow HTTP inbound traffic to ECS"
   from_port                = 80
-  to_port                  = 8080
-  ip_protocol                 = "tcp"
-  cidr_ipv4               = "0.0.0.0/0"
-  security_group_id        = aws_security_group.allow_http_ecs.id
+  to_port                  = 80
+  protocol                 = "tcp"
+  # cidr_ipv4               = "0.0.0.0/0"
+  security_group_id      = aws_security_group.allow_http_ecs.id
+  source_security_group_id = var.security_group_alb_id
 
   depends_on = [aws_security_group.allow_http_ecs]
-
-  tags = {
-    Name = "allow_http_rule:csgtest"
-  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_all_outbound" {

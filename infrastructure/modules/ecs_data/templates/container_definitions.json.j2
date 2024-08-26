@@ -4,13 +4,13 @@
     "image": "${container_image}",
     "memory": ${memory},
     "repositoryCredentials": {
-      "credentialsParameter": "arn:aws:secretsmanager:sa-east-1:817823645260:secret:ghrc_deploys-SFSDuS"
+      "credentialsParameter": "${aws_secret_pull}"
     },
     "cpu": ${cpu},
     "portMappings": [
       {
-        "containerPort": 8080,
-        "hostPort": 8080
+        "containerPort": 80,
+        "hostPort": 80
       }
     ]
   }

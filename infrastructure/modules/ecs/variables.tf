@@ -52,3 +52,16 @@ variable "security_groups" {
   description = "Security Groups para la configuración de red"
   type        = list(string)
 }
+variable "container_name" {
+  description = "Container Name"
+  type        = string
+}
+variable "target_group_arn" {
+  description = "ARN del grupo Application Load Balancer"
+  type        = string
+}
+variable "load_balancer_arn" {
+  description = "ARN del Application Load Balancer"
+  type        = string
+}
+

@@ -2,39 +2,60 @@
 module "ecs_data" {
   source = "./modules/ecs_data"
   container_image = var.container_image
-  container_name = var.container_name
+  container_name = "${var.app_name}-${var.branch_name}"
+  aws_secret_pull = var.aws_secret_pull
 }
 
 #VPC creation
 module "vpc" {
   source = "./modules/vpc"
-  name   = "hello-world-vpc"
+  name   = "${var.app_name}-vpc-${var.branch_name}"
   cidr_block = "10.123.0.0/16"
-  container_subnet_cidrs  = ["10.123.1.0/24" ] #, "10.123.2.0/24"]
+  public_subnet_cidrs  = ["10.123.1.0/24","10.123.2.0/24"]
   private_subnet_cidrs = ["10.123.3.0/24" , "10.123.4.0/24"]
   azs = ["sa-east-1a", "sa-east-1b"]
 }
 
-# Http security group
-module "security_group" {
-  source = "./modules/sg-http"
-  name   = "hello-world-http-sg"
+# ALB Http security group
+module "security_group_alb" {
+  source = "./modules/sg-http-alb"
+  name   = "${var.app_name}-http-alb-sg-${var.branch_name}"
+  # name   = "${var.app_name}-http-alb-sg-${var.branch_name}"
   vpc_id = module.vpc.vpc_id
   depends_on = [ module.vpc ]
+}
+# Http security group
+module "security_group_ecs" {
+  source = "./modules/sg-http"
+  name   = "${var.app_name}-ecs-sg-${var.branch_name}"
+  vpc_id = module.vpc.vpc_id
+  depends_on = [ module.vpc, module.security_group_alb]
+  security_group_alb_id = module.security_group_alb.security_group_id
 }
 # mysql security group
 module "security_group_mysql" {
   source = "./modules/sg-mysql"
-  name   = "hello-world-db-sg"
+  name   = "${var.app_name}-DB-sg-${var.branch_name}"
   vpc_id = module.vpc.vpc_id
   depends_on = [ module.vpc ]
+  security_group_ecs_id = module.security_group_ecs.security_group_id
+}
+
+# Load Balancer creation
+module "alb" {
+  source = "./modules/alb"
+  name   = "${var.app_name}-alb-${var.branch_name}" 
+  # name   = "${var.app_name}-alb-${var.branch_name}" 
+  security_groups = [module.security_group_alb.security_group_id, module.security_group_ecs.security_group_id]
+  subnets = module.vpc.public_subnet_cidrs
+  vpc_id = module.vpc.vpc_id
 }
 
 # ECS creation
 module "ecs" {
   source = "./modules/ecs"
-  cluster_name      = "hello-world-cluster"
-  task_family       = "hello-world-task"
+  cluster_name      = "${var.app_name}-cluster-${var.branch_name}"
+  task_family       = "${var.app_name}-task-${var.branch_name}"
   container_definitions = module.ecs_data.container_definitions_rendered
   # 256 (.25 vCPU)
   cpu               = "256"
@@ -42,32 +63,36 @@ module "ecs" {
   memory            = "512"
   execution_role_arn = module.iam_role.iam_role_arn
   task_role_arn      = module.iam_role.iam_role_arn
-  service_name       = "hello-world-service"
+  service_name       = "${var.app_name}-service-${var.branch_name}"
   # Instances of the task to place and keep running
   desired_count      = 1
-  subnets            = module.vpc.container_subnet_cidrs
-  security_groups    = [ module.security_group.security_group_id]
+  subnets            = module.vpc.private_subnets
+  security_groups    = [ module.security_group_ecs.security_group_id]
+  load_balancer_arn      = module.alb.alb_arn
+  target_group_arn       = module.alb.target_group_arn
+  container_name = "${var.app_name}-${var.branch_name}"
 }
 
 # RDS service 
 module "rds" {
   source = "./modules/rds"
-  db_identifier = "rds"
+  db_identifier = "${var.app_name}-rds"
   engine        = "mariadb"
   instance_class = "db.t3.micro"
   allocated_storage = 10
-  db_name       = "cgstest"
-  username      = "admin"
-  password      = "clavesuperSEGURA"
+  db_name       = "${var.app_name}db"
+  username          = var.aws_rds_username
+  password          = var.aws_rds_password
   vpc_security_group_ids = [ module.security_group_mysql.security_group_id ]
-  db_subnet_group_name = "my-db-subnet-group"
+  db_subnet_group_name = "${var.app_name}-db-subnet-group-${var.branch_name}"
   subnets =  module.vpc.private_subnets
 }
+
 
 #Role for ECS execution task
 module "iam_role" {
   source = "./modules/iam"
-  role_name = "ecs-task-execution-role"
+  role_name = "${var.app_name}-ecs-task-execution-role${var.branch_name}"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -92,7 +117,8 @@ EOF
         "ecr:GetDownloadUrlForLayer",
         "ecr:BatchGetImage",
         "logs:CreateLogStream",
-        "logs:PutLogEvents"
+        "logs:PutLogEvents",
+        "secretsmanager:GetSecretValue"
       ],
       "Resource": "*"
     }

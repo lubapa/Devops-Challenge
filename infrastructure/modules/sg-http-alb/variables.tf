@@ -6,7 +6,3 @@ variable "vpc_id" {
   description = "ID of the VPC to create security group"
   type        = string
 }
-variable "security_group_alb_id" {
-  description = "ID Security Group ALB"
-  type        = string
-}
