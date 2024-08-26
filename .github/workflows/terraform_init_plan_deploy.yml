@@ -4,10 +4,9 @@ name: Deploy Infrastructure
 on:
   push:  
     branches:
-      - infra_test
+      - some-branch
     paths:
       - 'infrastructure/**'
-  workflow_dispatch:
 
 jobs:
  

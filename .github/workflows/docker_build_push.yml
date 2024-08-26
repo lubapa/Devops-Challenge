@@ -3,7 +3,7 @@ name: Build & Push Docker Image
 on:
   push:
     branches:
-      - infra_test
+      - develop
     paths:
       - 'application/**'
 
