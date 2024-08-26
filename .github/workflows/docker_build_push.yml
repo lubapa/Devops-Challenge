@@ -55,7 +55,7 @@ jobs:
         run: |
             # ALB_NAME_PATTERN="${{ github.ref_name }}"
             ALB_NAME_PATTERN="alb"
-            ALB_DNS=$(aws elbv2 describe-load-balancers --query "LoadBalancers[?contains(LoadBalancername, '${ALB_NAME_PATTERN}')].DNSName" --output text)
+            ALB_DNS=$(aws elbv2 describe-load-balancers --query "LoadBalancers[?contains(LoadBalancerName, '${ALB_NAME_PATTERN}')].DNSName" --output text)
             echo "ALB DNS Name: $ALB_DNS"
             echo "ALB_DNS_NAME=$ALB_DNS" >> $GITHUB_ENV
       
