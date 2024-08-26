@@ -21,9 +21,9 @@ resource "aws_security_group_rule" "allow_mysql_rds" {
   depends_on = [aws_security_group.mysql_sg]
 }
 
-resource "aws_security_group_rule" "allow_https_outbound_alb" {
+resource "aws_security_group_rule" "allow_mysql_outbound" {
   type                     =  "egress"
-  description              = "Allow HTTPS outbound traffic for ALB"
+  description              = "Allow MYSQL outbound traffic from RDS"
   from_port                = 3306
   to_port                  = 3306
   protocol                 = "TCP"
