@@ -1,4 +1,4 @@
-# pagerduty-devops-challenge
+# Devops-Challenge
 Repository dedicated to implement IaaC to deploy ECS cluster and RDS instance for the PagerDuty Take Home Exercise
 
 This was made with Github Actions + AWS + Terraform.
